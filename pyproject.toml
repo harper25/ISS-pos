@@ -6,6 +6,12 @@ authors = ["JO <olesjakubb@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
+numpy = "^1.15"
+matplotlib = "^2"
+pyproj = "^1.9"
+pyshp = "^2.0"
+pyephem = "^3.7"
+requests = "^2.21"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
