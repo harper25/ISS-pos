@@ -3,12 +3,11 @@ import requests
 import ephem
 from math import degrees
 import numpy as np
-
 import matplotlib
+import matplotlib.animation # noqa
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt # noqa
 from mpl_toolkits.basemap import Basemap # noqa
-import matplotlib.animation # noqa
 
 
 req = requests.get("http://www.celestrak.com/NORAD/elements/stations.txt")
@@ -18,7 +17,7 @@ line1 = tle[0]
 line2 = tle[1]
 line3 = tle[2]
 
-iss = ephem.readtle(line1, line2, line3)
+iss_pos = ephem.readtle(line1, line2, line3)
 
 fig = plt.figure(figsize=(8, 6), edgecolor='w')
 
@@ -42,40 +41,36 @@ CS = map.nightshade(now)
 text = plt.text(0, 0, 'International\n Space Station')
 
 
-def animate(i):
+def get_coords():
     now = datetime.utcnow()
-    iss.compute(now)
-    lon = degrees(iss.sublong)
-    lat = degrees(iss.sublat)
+    iss_pos.compute(now)
+    lon = degrees(iss_pos.sublong)
+    lat = degrees(iss_pos.sublat)
+    return lon, lat
 
-    print("longitude: %f - latitude: %f" % (lon, lat))
 
-    plt.title('Day/Night Map for %s (UTC)' % now.strftime("%d %b %Y %H:%M:%S"))
+def show_route():
+    lon, lat = get_coords()
+
+
+def animate(i):
+    lon, lat = get_coords()
+    # print(f'longitude: {lon} - latitude: {lat}')
+
+    plt.title(f'''Day/Night Map for {now.strftime("%d %b %Y %H:%M:%S")} UTC
+    ISS longitude: {lon:.2f}, latitude: {lat:.2f}''')
     x, y = map(lon, lat)
-    map.plot(x, y, 'ro', markersize=2)
+    map.plot(x, y, 'bo', markersize=2)
     text.set_position((x+5, y+5))
-    # plt.text(x+5, y+5, 'International\n Space Station')
+
+
+def hello():
+    print('Hello!')
 
 
 if __name__ == "__main__":
+    show_route()
     ani = matplotlib.animation.FuncAnimation(fig, animate, frames=2,
                                              interval=5000, repeat=True)
 
     plt.show()
-
-
-# fig = plt.figure(figsize=(8, 6), edgecolor='w')
-# m = Basemap(projection='cyl', resolution=None,
-#             llcrnrlat=-90, urcrnrlat=90,
-#             llcrnrlon=-180, urcrnrlon=180, )
-# draw_map(m)
-
-# python = ">=3.6"
-# numpy = "^1.15"
-# matplotlib = "^2.0"
-# requests = "^2.21"
-# pyproj = "^1.9"
-# # geos = { path = "../../dep" }
-
-# pyshp = "^2.0"
-# pyephem = "^3.7"
