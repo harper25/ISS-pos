@@ -8,3 +8,6 @@ venv
 
 *.manifest
 *.spec
+dep
+iss_pos.egg*
+geos
