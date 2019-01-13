@@ -11,3 +11,6 @@ venv
 dep
 iss_pos.egg*
 geos
+
+basemap*
+pyproj*
