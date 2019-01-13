@@ -37,11 +37,12 @@ map.fillcontinents(color='coral', lake_color='aqua')
 # shade the night areas, with alpha transparency so the
 # map shows through. Use current time in UTC.
 now = datetime.utcnow()
-CS = map.nightshade(now)
+map.nightshade(now)
+
 text = plt.text(0, 0, 'International\n Space Station')
 
 
-def get_coords():
+def get_current_coords():
     now = datetime.utcnow()
     iss_pos.compute(now)
     lon = degrees(iss_pos.sublong)
@@ -50,15 +51,17 @@ def get_coords():
 
 
 def show_route():
-    lon, lat = get_coords()
+    now = datetime.utcnow()
+    iss_pos.compute(now)
+    pass
 
 
 def animate(i):
-    lon, lat = get_coords()
+    lon, lat = get_current_coords()
     # print(f'longitude: {lon} - latitude: {lat}')
 
-    plt.title(f'''Day/Night Map for {now.strftime("%d %b %Y %H:%M:%S")} UTC
-    ISS longitude: {lon:.2f}, latitude: {lat:.2f}''')
+    plt.title(f'''{datetime.utcnow().strftime("%d %b %Y %H:%M:%S")} UTC
+    ISS position: latitude: {lat:.2f}, longitude: {lon:.2f} ''')
     x, y = map(lon, lat)
     map.plot(x, y, 'bo', markersize=2)
     text.set_position((x+5, y+5))
@@ -68,9 +71,12 @@ def hello():
     print('Hello!')
 
 
-if __name__ == "__main__":
+def main():
     show_route()
     ani = matplotlib.animation.FuncAnimation(fig, animate, frames=2,
                                              interval=5000, repeat=True)
-
     plt.show()
+
+
+if __name__ == "__main__":
+    main()
