@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 import ephem
 from math import degrees
@@ -39,41 +39,62 @@ map.fillcontinents(color='coral', lake_color='aqua')
 now = datetime.utcnow()
 map.nightshade(now)
 
-text = plt.text(0, 0, 'International\n Space Station')
+text = plt.text(0, 0, 'International\n Space Station', fontweight='bold',
+                color='darkblue')
+
+iss_point, = plt.plot([], [], 'ob', markersize=10)
 
 
-def get_current_coords():
-    now = datetime.utcnow()
-    iss_pos.compute(now)
+def get_coords(time):
+    iss_pos.compute(time)
     lon = degrees(iss_pos.sublong)
     lat = degrees(iss_pos.sublat)
     return lon, lat
 
 
 def show_route():
-    now = datetime.utcnow()
-    iss_pos.compute(now)
-    pass
+    lon_list = []
+    lat_list = []
+    # ISS part from the past
+    for seconds in range(-1000, 1, 10):
+        lon, lat = get_coords(datetime.utcnow() + timedelta(seconds=seconds))
+        lon_list.append(lon)
+        lat_list.append(lat)
+    x, y = map(lon_list, lat_list)
+    map.plot(x, y, 'or', markersize=2)
+
+    lon_list = []
+    lat_list = []
+    # ISS part from the future
+    for seconds in range(0, 1001, 10):
+        lon, lat = get_coords(datetime.utcnow() + timedelta(seconds=seconds))
+        lon_list.append(lon)
+        lat_list.append(lat)
+    x, y = map(lon_list, lat_list)
+    map.plot(x, y, 'om', markersize=1)
 
 
 def animate(i):
-    lon, lat = get_current_coords()
+    lon, lat = get_coords(datetime.utcnow())
     # print(f'longitude: {lon} - latitude: {lat}')
 
     plt.title(f'''{datetime.utcnow().strftime("%d %b %Y %H:%M:%S")} UTC
-    ISS position: latitude: {lat:.2f}, longitude: {lon:.2f} ''')
+                  ISS position: latitude: {lat:.2f}, longitude: {lon:.2f} ''')
     x, y = map(lon, lat)
-    map.plot(x, y, 'bo', markersize=2)
+    map.plot(x, y, 'or', markersize=2)
+
+    iss_point.set_data(x, y)
+
     text.set_position((x+5, y+5))
 
-
-def hello():
-    print('Hello!')
+    lon, lat = get_coords(datetime.utcnow() + timedelta(seconds=1000))
+    x, y = map(lon, lat)
+    map.plot(x, y, 'om', markersize=1)
 
 
 def main():
     show_route()
-    ani = matplotlib.animation.FuncAnimation(fig, animate, frames=2,
+    ani = matplotlib.animation.FuncAnimation(fig, animate, frames=2,  # noqa
                                              interval=5000, repeat=True)
     plt.show()
 
