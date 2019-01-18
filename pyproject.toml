@@ -11,6 +11,7 @@ numpy = "^1.15"
 pyshp = "^2.0"
 pyephem = "^3.7"
 requests = "^2.21"
+pillow = "^5.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
