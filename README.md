@@ -3,7 +3,9 @@
 Track position of International Space Station (ISS) on a map.
 The application requests [Celestrak](https://www.celestrak.com/NORAD/documentation/tle-fmt.php) for current ISS orbit data in Two-Line Orbital Element Set Format (TLE), calculates its route and updates its position every 5 seconds.
 
-![](/image/screen.png)
+<p align="center"> 
+  <img src="/icon/screen.PNG">
+</p>
 
 ## Installation
 
@@ -13,11 +15,13 @@ The application requests [Celestrak](https://www.celestrak.com/NORAD/documentati
 * go inside the virtual environment: `poetry shell`
 * install dependencies from `poetry.lock`: `poetry install`
 
-### Mac:
+### Other dependencies
+
+#### Mac: pyproj, GEOS, Basemap
 
 * https://matplotlib.org/basemap/users/installing.html
 
-### Win:
+#### Win: pyproj, Basemap
 
-* pyproj -> Win pip install from wheels
-* basemap -> Win pip install from wheels
+* pyproj -> pip install from wheels
+* basemap -> pip install from wheels
