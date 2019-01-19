@@ -26,44 +26,35 @@ def process_image(image, shape_color=(0, 0, 0, 255)):
     return image
 
 
-# req = requests.get("http://www.celestrak.com/NORAD/elements/stations.txt")
-# tle = req.text.split("\n")[0:3]
-# line1 = tle[0]
-# line2 = tle[1]
-# line3 = tle[2]
+req = requests.get("http://www.celestrak.com/NORAD/elements/stations.txt")
+tle = req.text.split("\n")[0:3]
+line1 = tle[0]
+line2 = tle[1]
+line3 = tle[2]
 
-line1 = 'ISS (ZARYA)'
-line2 = '1 25544U 98067A   19015.25189318  .00000401  00000-0  13432-4 0  9995'
-line3 = '2 25544  51.6418  41.9123 0002387 289.9764 167.0424 15.53761231151490'
+# line1 = 'ISS (ZARYA)'
+# line2 = '1 25544U 98067A   19015.25189318  .00000401  00000-0  13432-4 0  9995' # noqa
+# line3 = '2 25544  51.6418  41.9123 0002387 289.9764 167.0424 15.53761231151490' # noqa
 
 iss_pos = ephem.readtle(line1, line2, line3)
 
 fig = plt.figure(figsize=(8, 6), edgecolor='w')
-# miller projection
 map = Basemap(projection='mill', lon_0=0)
-
-# plot coastlines, draw label meridians and parallels.
 map.drawcoastlines()
 map.drawparallels(np.arange(-90, 90, 30), labels=[1, 0, 0, 0])
 map.drawmeridians(np.arange(map.lonmin, map.lonmax + 30, 60),
                   labels=[0, 0, 0, 1])
-
-# fill continents 'coral' (with zorder=0), color wet areas 'aqua'
 map.drawmapboundary(fill_color='aqua')
 map.fillcontinents(color='coral', lake_color='aqua')
-
-# shade the night areas, with alpha transparency so the
-# map shows through. Use current time in UTC.
 map.nightshade(datetime.utcnow())
 
 # text = plt.text(0, 0, 'International\n Space Station', fontweight='bold',
 #                 color=(0, 0.2, 1))
 # iss_point, = plt.plot([], [], 'ob', markersize=10)
 
-iss_image = Image.open('icon/iss.png')
-process_image(iss_image, (200, 200, 20))
-
-# save img
+iss_image = Image.open('icon/iss_new.png')
+# process_image(iss_image, (12, 12, 36))
+# iss_image.save('icon/iss_new.png')
 
 imagebox = OffsetImage(iss_image, zoom=0.08)
 iss_icon = AnnotationBbox(imagebox, map(0, 0), xybox=(0, -4), xycoords='data',
@@ -106,7 +97,7 @@ def animate(i):
     map.plot(x, y, 'ob', markersize=1)
 
     lon, lat = get_coords(datetime.utcnow())
-    plt.title(f'''{datetime.utcnow().strftime("%d %b %Y %H:%M:%S")} UTC
+    plt.title(f'''Date: {datetime.utcnow().strftime("%d %b %Y %H:%M:%S")} UTC
                   ISS position: latitude: {lat:.2f}, longitude: {lon:.2f} ''')
     x, y = map(lon, lat)
     map.plot(x, y, 'or', markersize=2)
@@ -126,4 +117,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#  iss icon: https://www.iconspng.com/uploads/iss-silhouette/iss-silhouette.png
+#  iss icon from: https://www.iconspng.com/uploads/iss-silhouette/iss-silhouette.png # noqa
